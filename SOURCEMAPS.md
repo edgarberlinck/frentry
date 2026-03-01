@@ -291,10 +291,20 @@ Upload source maps para um projeto.
 }
 ```
 
+## Armazenamento
+
+Atualmente, os source maps são armazenados diretamente no PostgreSQL como TEXT. Isso é adequado para uso pessoal e pequenos times.
+
+Para produção com alto volume, considere migrar para **Vercel Blob Storage** no futuro para:
+- Reduzir tamanho do banco de dados
+- Melhorar performance de queries
+- Escalar armazenamento independentemente
+
 ## Próximos Passos
 
-- [ ] Plugin Webpack/Vite para upload automático
+- [x] Plugin Webpack/Vite para upload automático
 - [ ] Suporte para multiple artifacts por release
 - [ ] Compressão de source maps (gzip)
 - [ ] API token dedicado (sem cookie de sessão)
 - [ ] Retention policy (auto-delete old releases)
+- [ ] Migração opcional para Vercel Blob Storage
