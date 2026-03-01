@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { generateFingerprint } from "@/lib/fingerprint";
 import { resolveStackTrace } from "@/lib/sourcemap";
 import { notifyNewIssue } from "@/lib/notifications";
+import { type Prisma } from "@/generated/prisma/client";
 import { ingestEventSchema } from "@/lib/validators";
 
 /**
@@ -53,10 +54,9 @@ export async function POST(request: Request) {
     });
 
     // Truncate message for issue title
+    const rawTitle = `${type}: ${message}`;
     const title =
-      `${type}: ${message}`.length > 200
-        ? `${type}: ${message}`.slice(0, 197) + "..."
-        : `${type}: ${message}`;
+      rawTitle.length > 200 ? rawTitle.slice(0, 197) + "..." : rawTitle;
 
     // Find or create issue
     const existingIssue = await prisma.issue.findUnique({
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
         message,
         stacktrace: stacktrace || null,
         resolved: resolvedStacktrace,
-        metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined,
+        metadata: (metadata as Prisma.InputJsonValue) || undefined,
         release: release || null,
         projectId: project.id,
         issueId: issue.id,

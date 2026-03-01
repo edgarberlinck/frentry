@@ -76,20 +76,28 @@ async function sendWebhookNotification(
   url: string,
   payload: NotificationPayload
 ): Promise<void> {
-  await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      event: "new_issue",
-      issue: {
-        id: payload.issueId,
-        title: payload.issueTitle,
-      },
-      project: {
-        id: payload.projectId,
-        name: payload.projectName,
-      },
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${payload.projectId}/issues/${payload.issueId}`,
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
+      body: JSON.stringify({
+        event: "new_issue",
+        issue: {
+          id: payload.issueId,
+          title: payload.issueTitle,
+        },
+        project: {
+          id: payload.projectId,
+          name: payload.projectName,
+        },
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/projects/${payload.projectId}/issues/${payload.issueId}`,
+      }),
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 }
