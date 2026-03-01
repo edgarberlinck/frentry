@@ -93,7 +93,7 @@ export async function POST(request: Request) {
         message,
         stacktrace: stacktrace || null,
         resolved: resolvedStacktrace,
-        metadata: metadata || undefined,
+        metadata: metadata ? JSON.parse(JSON.stringify(metadata)) : undefined,
         release: release || null,
         projectId: project.id,
         issueId: issue.id,

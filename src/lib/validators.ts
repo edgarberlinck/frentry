@@ -6,7 +6,7 @@ export const ingestEventSchema = z.object({
   message: z.string().min(1),
   stacktrace: z.string().optional(),
   release: z.string().optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
   timestamp: z.string().datetime().optional(),
 });
 
