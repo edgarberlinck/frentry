@@ -167,17 +167,33 @@ curl -X POST http://localhost:3000/api/ingest \
 
 ### Uploading Source Maps
 
+#### Using the CLI script:
+
 ```bash
-curl -X POST http://localhost:3000/api/projects/<projectId>/releases \
-  -H "Content-Type: application/json" \
-  -H "Cookie: <session-cookie>" \
-  -d '{
-    "version": "1.0.0",
-    "sourceMaps": [
-      { "fileName": "app.js", "content": "<sourcemap-json-content>" }
-    ]
-  }'
+# Build your project with source maps enabled
+npm run build
+
+# Upload source maps
+node scripts/upload-sourcemaps.js \
+  --project-id <your-project-id> \
+  --version 1.0.0 \
+  --dir ./dist
 ```
+
+#### Or with environment variables:
+
+```bash
+export FRENTRY_PROJECT_ID=<your-project-id>
+export FRENTRY_VERSION=1.0.0
+export FRENTRY_SOURCEMAP_DIR=./dist
+npm run upload-sourcemaps
+```
+
+See [SOURCEMAPS.md](./SOURCEMAPS.md) for complete documentation including:
+- Build tool configuration (Next.js, Vite, Webpack)
+- CI/CD integration examples
+- Webpack plugin for automatic uploads
+- Troubleshooting guide
 
 ## Implementation Roadmap
 
@@ -185,11 +201,12 @@ curl -X POST http://localhost:3000/api/projects/<projectId>/releases \
 2. ✅ **Event ingestion** — `/api/ingest` endpoint with fingerprinting
 3. ✅ **Dashboard UI** — Projects, issues, events, settings
 4. ✅ **Source map support** — Upload and resolve stack traces
-5. ✅ **Notifications** — Email and webhook on new issues
-6. 🔲 **Client SDK** — Lightweight JS SDK for automatic error capture
-7. 🔲 **Event retention** — Auto-delete old events
-8. 🔲 **Search & filters** — Filter issues by status, date range
-9. 🔲 **Charts** — Error frequency over time
+5. ✅ **Source map tooling** — CLI script, Webpack plugin, documentation
+6. ✅ **Notifications** — Email and webhook on new issues
+7. 🔲 **Client SDK** — Lightweight JS SDK for automatic error capture
+8. 🔲 **Event retention** — Auto-delete old events
+9. 🔲 **Search & filters** — Filter issues by status, date range
+10. 🔲 **Charts** — Error frequency over time
 
 ## License
 
