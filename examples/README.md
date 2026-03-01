@@ -1,70 +1,70 @@
-# Exemplos de Integração - Source Maps
+# Integration Examples - Source Maps
 
-Este diretório contém exemplos práticos de como integrar o upload de source maps no seu pipeline.
+This directory contains practical examples of how to integrate source map uploads into your pipeline.
 
-## Estrutura
+## Structure
 
 ```
 examples/
-├── next-js/          # Next.js com GitHub Actions
-├── vite-react/       # Vite + React com upload manual
-├── webpack-vanilla/  # Webpack puro com plugin
+├── next-js/          # Next.js with GitHub Actions
+├── vite-react/       # Vite + React with manual upload
+├── webpack-vanilla/  # Pure Webpack with plugin
 └── README.md
 ```
 
-## Escolha seu exemplo
+## Choose Your Example
 
-- **Next.js**: Aplicação completa com CI/CD no GitHub Actions
-- **Vite + React**: SPA moderna com script de upload
-- **Webpack**: Configuração com plugin automático
+- **Next.js**: Complete application with CI/CD on GitHub Actions
+- **Vite + React**: Modern SPA with upload script
+- **Webpack**: Configuration with automatic plugin
 
-## Conceitos Básicos
+## Basic Concepts
 
-Todos os exemplos seguem este fluxo:
+All examples follow this flow:
 
-1. **Build** com source maps habilitados
-2. **Upload** dos source maps para o Frentry
-3. **Release tracking** no código do app
+1. **Build** with source maps enabled
+2. **Upload** source maps to Frentry
+3. **Release tracking** in app code
 
 ```js
-// No seu app frontend
+// In your frontend app
 window.frentry.init({
-  dsn: 'sua-dsn-aqui',
-  release: '1.0.0' // Mesma versão do upload!
+  dsn: 'your-dsn-here',
+  release: '1.0.0' // Same version as upload!
 });
 ```
 
 ## Quick Start
 
 ```bash
-# 1. Clone um exemplo
+# 1. Clone an example
 cp -r examples/vite-react my-app
 cd my-app
 
-# 2. Configure as variáveis
+# 2. Configure variables
 cp .env.example .env
-# Edite .env com seu PROJECT_ID
+# Edit .env with your PROJECT_ID
 
-# 3. Build e upload
+# 3. Build and upload
 npm install
 npm run build
 npm run upload-sourcemaps
 ```
 
-## Variáveis Comuns
+## Common Variables
 
-Todos os exemplos usam estas variáveis:
+All examples use these variables:
 
 ```bash
-FRENTRY_PROJECT_ID=<seu-project-id>
+FRENTRY_PROJECT_ID=<your-project-id>
 FRENTRY_VERSION=1.0.0
 FRENTRY_SOURCEMAP_DIR=./dist
-FRENTRY_API_URL=https://seu-frentry.com
+FRENTRY_API_URL=https://your-frentry.com
 ```
 
 ## CI/CD
 
-Para ambientes de produção, use GitHub Actions / GitLab CI:
+For production environments, use GitHub Actions / GitLab CI:
 
 ```yaml
 - name: Upload Source Maps
@@ -76,4 +76,4 @@ Para ambientes de produção, use GitHub Actions / GitLab CI:
 
 ## Troubleshooting
 
-Veja [SOURCEMAPS.md](../SOURCEMAPS.md) para resolução de problemas comuns.
+See [SOURCEMAPS.md](../SOURCEMAPS.md) for common issues resolution.

@@ -1,6 +1,6 @@
-# Exemplo: Vite + React
+# Example: Vite + React
 
-Configuração para Vite com upload manual de source maps.
+Configuration for Vite with manual source map upload.
 
 ## 1. Vite Config
 
@@ -13,12 +13,12 @@ export default defineConfig({
   plugins: [react()],
   
   build: {
-    // Gera source maps
+    // Generate source maps
     sourcemap: true,
     
     rollupOptions: {
       output: {
-        // Nomes consistentes para facilitar o mapeamento
+        // Consistent names for easier mapping
         entryFileNames: '[name].js',
         chunkFileNames: '[name].js',
         assetFileNames: '[name].[ext]'
@@ -67,7 +67,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 
-// Simples error handler
+// Simple error handler
 window.addEventListener('error', (event) => {
   fetch(import.meta.env.VITE_FRENTRY_API + '/api/ingest', {
     method: 'POST',
@@ -75,7 +75,7 @@ window.addEventListener('error', (event) => {
     body: JSON.stringify({
       dsn: import.meta.env.VITE_FRENTRY_DSN,
       type: event.error?.name || 'Error',
-      message: event.error?.message || event.message,
+      message: error?.message || event.message,
       stacktrace: event.error?.stack,
       release: import.meta.env.VITE_APP_VERSION,
       metadata: {
@@ -95,21 +95,21 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 
 ## 5. Build & Upload
 
-### Desenvolvimento Local
+### Local Development
 
 ```bash
 npm run build
 ```
 
-### Com Upload
+### With Upload
 
 ```bash
-# Via script npm
+# Via npm script
 FRENTRY_PROJECT_ID=xxx \
 FRENTRY_VERSION=1.0.0 \
 npm run build:release
 
-# Ou manualmente
+# Or manually
 npm run build
 FRENTRY_PROJECT_ID=xxx \
 FRENTRY_VERSION=1.0.0 \
@@ -136,26 +136,26 @@ FRENTRY_SOURCEMAP_DIR=./dist \
 node ../../scripts/upload-sourcemaps.js
 
 echo "Deploying to production..."
-# Seu comando de deploy aqui
+# Your deploy command here
 # rsync, scp, aws s3 sync, etc.
 
 echo "✅ Deploy complete!"
 ```
 
-Uso:
+Usage:
 ```bash
 chmod +x deploy.sh
 export FRENTRY_PROJECT_ID=xxx
 ./deploy.sh
 ```
 
-## Teste
+## Testing
 
 **src/App.jsx**
 ```jsx
 function App() {
   const triggerError = () => {
-    // Erro de exemplo para testar
+    // Example error for testing
     throw new Error('Test error from Vite app!')
   }
 
@@ -172,24 +172,24 @@ function App() {
 export default App
 ```
 
-## Estrutura Final
+## Final Structure
 
 ```
 dist/
 ├── index.html
-├── index.js         # Bundle principal
+├── index.js         # Main bundle
 ├── index.js.map     # Source map
 ├── vendor.js
 └── vendor.js.map
 ```
 
-## Verificação
+## Verification
 
 ```bash
 # 1. Build
 npm run build
 
-# 2. Verificar source maps
+# 2. Check source maps
 ls -lh dist/*.map
 
 # 3. Upload
@@ -197,7 +197,7 @@ FRENTRY_PROJECT_ID=xxx \
 FRENTRY_VERSION=1.0.0 \
 npm run upload-sourcemaps
 
-# 4. Testar app
+# 4. Test app
 npm run preview
-# Abra http://localhost:4173 e clique no botão de erro
+# Open http://localhost:4173 and click the error button
 ```

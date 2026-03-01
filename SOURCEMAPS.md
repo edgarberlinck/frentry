@@ -1,14 +1,14 @@
-# Source Maps - Guia Completo
+# Source Maps - Complete Guide
 
-Este documento explica como fazer upload de source maps para o Frentry para obter stack traces resolvidos nos erros capturados.
+This document explains how to upload source maps to Frentry to get resolved stack traces for captured errors.
 
-## O que são Source Maps?
+## What are Source Maps?
 
-Source maps mapeiam código minificado/transpilado de volta para o código fonte original. Quando você faz upload dos source maps do seu projeto, o Frentry pode mostrar o arquivo, linha e coluna originais nos stack traces.
+Source maps map minified/transpiled code back to the original source code. When you upload your project's source maps, Frentry can show the original file, line, and column in stack traces.
 
-## Configuração
+## Configuration
 
-### 1. Habilitar source maps no build
+### 1. Enable source maps in build
 
 #### Next.js / React
 
@@ -41,36 +41,36 @@ module.exports = {
 }
 ```
 
-### 2. Build do projeto
+### 2. Build your project
 
 ```bash
 npm run build
 ```
 
-Isso irá gerar arquivos `.js.map` junto com os arquivos JavaScript.
+This will generate `.js.map` files alongside your JavaScript files.
 
-### 3. Upload dos source maps
+### 3. Upload source maps
 
-#### Opção 1: Via Script CLI (Recomendado)
+#### Option 1: Via CLI Script (Recommended)
 
 ```bash
-# Com argumentos
+# With arguments
 node scripts/upload-sourcemaps.js \
-  --project-id <seu-project-id> \
+  --project-id <your-project-id> \
   --version 1.0.0 \
   --dir ./dist
 
-# Com variáveis de ambiente
-export FRENTRY_PROJECT_ID=<seu-project-id>
+# With environment variables
+export FRENTRY_PROJECT_ID=<your-project-id>
 export FRENTRY_VERSION=1.0.0
 export FRENTRY_SOURCEMAP_DIR=./dist
 node scripts/upload-sourcemaps.js
 ```
 
-#### Opção 2: Via cURL
+#### Option 2: Via cURL
 
 ```bash
-# Primeiro, converta os source maps para JSON
+# First, convert source maps to JSON
 curl -X POST http://localhost:3000/api/projects/<project-id>/releases \
   -H "Content-Type: application/json" \
   -H "Cookie: <session-cookie>" \
@@ -79,13 +79,13 @@ curl -X POST http://localhost:3000/api/projects/<project-id>/releases \
     "sourceMaps": [
       {
         "fileName": "app.js",
-        "content": "<conteúdo-do-sourcemap-json>"
+        "content": "<sourcemap-json-content>"
       }
     ]
   }'
 ```
 
-## Integração com CI/CD
+## CI/CD Integration
 
 ### GitHub Actions
 
@@ -119,7 +119,7 @@ jobs:
 
 ### NPM Script
 
-Adicione ao `package.json`:
+Add to `package.json`:
 
 ```json
 {
@@ -131,35 +131,35 @@ Adicione ao `package.json`:
 }
 ```
 
-Uso:
+Usage:
 
 ```bash
 FRENTRY_PROJECT_ID=xxx FRENTRY_VERSION=1.0.0 npm run build:release
 ```
 
-## Variáveis de Ambiente
+## Environment Variables
 
-| Variável | Obrigatório | Descrição | Padrão |
-|----------|-------------|-----------|--------|
-| `FRENTRY_PROJECT_ID` | ✅ | ID do projeto no Frentry | - |
-| `FRENTRY_VERSION` | ✅ | Versão do release (ex: 1.0.0, commit SHA) | - |
-| `FRENTRY_SOURCEMAP_DIR` | ❌ | Diretório com os .js.map | `./dist` |
-| `FRENTRY_API_URL` | ❌ | URL da API do Frentry | `http://localhost:3000` |
-| `FRENTRY_AUTH_TOKEN` | ❌ | Token de autenticação (se necessário) | - |
+| Variable | Required | Description | Default |
+|----------|----------|-------------|---------|
+| `FRENTRY_PROJECT_ID` | ✅ | Project ID in Frentry | - |
+| `FRENTRY_VERSION` | ✅ | Release version (e.g. 1.0.0, commit SHA) | - |
+| `FRENTRY_SOURCEMAP_DIR` | ❌ | Directory containing .js.map files | `./dist` |
+| `FRENTRY_API_URL` | ❌ | Frentry API URL | `http://localhost:3000` |
+| `FRENTRY_AUTH_TOKEN` | ❌ | Authentication token (if needed) | - |
 
-## Como funciona
+## How it Works
 
-1. **Build**: Seu bundler gera arquivos `.js` e `.js.map`
-2. **Upload**: O script encontra todos os `.js.map` e envia para o Frentry
-3. **Armazenamento**: Source maps são armazenados por projeto e versão
-4. **Resolução**: Quando um erro ocorre:
-   - O SDK envia o erro com o campo `release: "1.0.0"`
-   - Frentry busca os source maps dessa versão
-   - Stack trace minificado é transformado em código original
+1. **Build**: Your bundler generates `.js` and `.js.map` files
+2. **Upload**: Script finds all `.js.map` files and sends to Frentry
+3. **Storage**: Source maps are stored by project and version
+4. **Resolution**: When an error occurs:
+   - SDK sends error with `release: "1.0.0"` field
+   - Frentry fetches source maps for that version
+   - Minified stack trace is transformed to original code
 
-## Exemplo Completo
+## Complete Example
 
-### 1. Projeto Next.js
+### 1. Next.js Project
 
 ```js
 // next.config.js
@@ -172,7 +172,7 @@ module.exports = {
 
 ```bash
 npm run build
-# Gera arquivos em .next/static/chunks/*.js.map
+# Generates files in .next/static/chunks/*.js.map
 ```
 
 ### 3. Upload
@@ -184,46 +184,46 @@ node scripts/upload-sourcemaps.js \
   --dir .next/static/chunks
 ```
 
-### 4. Capturar erro com release
+### 4. Capture errors with release
 
 ```js
-// No seu app
+// In your app
 window.frentry.init({
   dsn: 'https://...',
-  release: '1.0.0' // Mesma versão do upload!
+  release: '1.0.0' // Same version as upload!
 });
 ```
 
-## Dicas
+## Tips
 
-- ✅ **Use o commit SHA como versão** para rastreabilidade
-- ✅ **Faça upload antes do deploy** para garantir que os source maps estejam disponíveis
-- ✅ **Não commit source maps no git** - adicione `*.map` ao `.gitignore`
-- ⚠️ **Source maps podem ser grandes** - considere limpar releases antigas periodicamente
-- 🔒 **Mantenha source maps privados** - eles contêm seu código fonte
+- ✅ **Use commit SHA as version** for traceability
+- ✅ **Upload before deploy** to ensure source maps are available
+- ✅ **Don't commit source maps to git** - add `*.map` to `.gitignore`
+- ⚠️ **Source maps can be large** - consider cleaning old releases periodically
+- 🔒 **Keep source maps private** - they contain your source code
 
-## Segurança
+## Security
 
-Os source maps ficam armazenados no banco de dados e são acessíveis apenas:
-- Pelo proprietário do projeto (via dashboard)
-- Pelo sistema de resolução de stack traces (interno)
+Source maps are stored in the database and are only accessible by:
+- Project owner (via dashboard)
+- Stack trace resolution system (internal)
 
-**Não exponha** a URL da API de upload publicamente. Use em CI/CD com secrets.
+**Don't expose** the upload API URL publicly. Use in CI/CD with secrets.
 
 ## Troubleshooting
 
-### Source maps não estão sendo aplicados
+### Source maps are not being applied
 
-1. Verifique se a versão no erro bate com a versão do upload:
+1. Check if the version in the error matches the upload version:
    ```bash
-   # No banco
+   # In database
    SELECT version FROM Release WHERE projectId = 'xxx';
    
-   # No payload do erro
+   # In error payload
    { "release": "1.0.0" }
    ```
 
-2. Verifique se os nomes dos arquivos batem:
+2. Check if file names match:
    ```bash
    # Source map
    fileName: "app.js"
@@ -232,7 +232,7 @@ Os source maps ficam armazenados no banco de dados e são acessíveis apenas:
    at handleClick (app.js:42:15)
    ```
 
-3. Verifique o formato do source map:
+3. Check source map format:
    ```json
    {
      "version": 3,
@@ -241,21 +241,21 @@ Os source maps ficam armazenados no banco de dados e são acessíveis apenas:
    }
    ```
 
-### Upload falha com 401
+### Upload fails with 401
 
-Você precisa estar autenticado. Opções:
-1. Extraia o cookie de sessão do navegador
-2. Implemente um endpoint de API com token dedicado
-3. Use credenciais em um ambiente seguro
+You need to be authenticated. Options:
+1. Extract session cookie from browser
+2. Implement a dedicated API token endpoint
+3. Use credentials in a secure environment
 
-### Arquivos .map não encontrados
+### .map files not found
 
-Verifique:
+Check:
 ```bash
-# Listar source maps gerados
+# List generated source maps
 find ./dist -name "*.js.map"
 
-# Verificar configuração do bundler
+# Check bundler configuration
 # Next.js: productionBrowserSourceMaps: true
 # Vite: build.sourcemap: true
 ```
@@ -291,20 +291,20 @@ Upload source maps para um projeto.
 }
 ```
 
-## Armazenamento
+## Storage
 
-Atualmente, os source maps são armazenados diretamente no PostgreSQL como TEXT. Isso é adequado para uso pessoal e pequenos times.
+Currently, source maps are stored directly in PostgreSQL as TEXT. This is suitable for personal use and small teams.
 
-Para produção com alto volume, considere migrar para **Vercel Blob Storage** no futuro para:
-- Reduzir tamanho do banco de dados
-- Melhorar performance de queries
-- Escalar armazenamento independentemente
+For high-volume production, consider migrating to **Vercel Blob Storage** in the future to:
+- Reduce database size
+- Improve query performance
+- Scale storage independently
 
-## Próximos Passos
+## Next Steps
 
-- [x] Plugin Webpack/Vite para upload automático
-- [ ] Suporte para multiple artifacts por release
-- [ ] Compressão de source maps (gzip)
-- [ ] API token dedicado (sem cookie de sessão)
+- [x] Webpack/Vite plugin for automatic upload
+- [ ] Support for multiple artifacts per release
+- [ ] Source map compression (gzip)
+- [ ] Dedicated API token (without session cookie)
 - [ ] Retention policy (auto-delete old releases)
-- [ ] Migração opcional para Vercel Blob Storage
+- [ ] Optional migration to Vercel Blob Storage

@@ -1,8 +1,8 @@
-# Exemplo: Next.js + GitHub Actions
+# Example: Next.js + GitHub Actions
 
-Configuração completa para Next.js com upload automático via CI/CD.
+Complete configuration for Next.js with automatic upload via CI/CD.
 
-## Estrutura
+## Structure
 
 ```
 next-js/
@@ -14,13 +14,13 @@ next-js/
 └── .env.example
 ```
 
-## 1. Configuração do Next.js
+## 1. Next.js Configuration
 
 **next.config.js**
 ```js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Habilita source maps em produção
+  // Enable source maps in production
   productionBrowserSourceMaps: true,
 }
 
@@ -85,29 +85,29 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
 ```
 
-## 4. Secrets do GitHub
+## 4. GitHub Secrets
 
-Configure em: `Settings > Secrets and variables > Actions`
+Configure in: `Settings > Secrets and variables > Actions`
 
-- `FRENTRY_PROJECT_ID`: ID do projeto no Frentry
-- `FRENTRY_API_URL`: URL da API (ex: https://frentry.com)
-- `VERCEL_TOKEN`: Token de deploy do Vercel
-- `VERCEL_ORG_ID`: ID da organização
-- `VERCEL_PROJECT_ID`: ID do projeto
+- `FRENTRY_PROJECT_ID`: Frentry project ID
+- `FRENTRY_API_URL`: API URL (e.g. https://frentry.com)
+- `VERCEL_TOKEN`: Vercel deploy token
+- `VERCEL_ORG_ID`: Organization ID
+- `VERCEL_PROJECT_ID`: Project ID
 
-## 5. Código do App
+## 5. App Code
 
 **pages/_app.js**
 ```js
 import { useEffect } from 'react'
 
-// Simples captura de erros
+// Simple error capture
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    // Inicializa Frentry (quando tiver o SDK)
+    // Initialize Frentry (when SDK is ready)
     if (typeof window !== 'undefined') {
       window.addEventListener('error', (event) => {
-        fetch('https://seu-frentry.com/api/ingest', {
+        fetch('https://your-frentry.com/api/ingest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -130,24 +130,24 @@ export default MyApp
 
 **.env.local**
 ```bash
-NEXT_PUBLIC_FRENTRY_DSN=https://xxx@seu-frentry.com/xxx
+NEXT_PUBLIC_FRENTRY_DSN=https://xxx@your-frentry.com/xxx
 NEXT_PUBLIC_APP_VERSION=1.0.0
 ```
 
-## Fluxo Completo
+## Complete Flow
 
-1. ✅ Developer faz push para `main`
+1. ✅ Developer pushes to `main`
 2. ✅ GitHub Actions:
-   - Instala dependências
-   - Build com source maps
-   - Upload source maps (com SHA do commit)
-   - Deploy para Vercel
-3. ✅ App em produção:
-   - Erros são capturados
-   - Enviados com `release: "<commit-sha>"`
-   - Frentry resolve stack traces automaticamente
+   - Install dependencies
+   - Build with source maps
+   - Upload source maps (with commit SHA)
+   - Deploy to Vercel
+3. ✅ Production app:
+   - Errors are captured
+   - Sent with `release: "<commit-sha>"`
+   - Frentry resolves stack traces automatically
 
-## Teste Local
+## Local Testing
 
 ```bash
 # Build
@@ -160,8 +160,8 @@ FRENTRY_SOURCEMAP_DIR=./.next/static/chunks \
 npm run upload-sourcemaps
 ```
 
-## Dicas
+## Tips
 
-- Use `${{ github.sha }}` como versão para rastrear commits
-- Source maps do Next.js ficam em `.next/static/chunks/`
-- Considere fazer upload apenas em produção (`if: github.ref == 'refs/heads/main'`)
+- Use `${{ github.sha }}` as version to track commits
+- Next.js source maps are in `.next/static/chunks/`
+- Consider uploading only in production (`if: github.ref == 'refs/heads/main'`)

@@ -1,6 +1,6 @@
-# Exemplo: Webpack + Plugin
+# Example: Webpack + Plugin
 
-Configuração com plugin automático que faz upload após cada build.
+Configuration with automatic plugin that uploads after each build.
 
 ## 1. Webpack Config
 
@@ -19,7 +19,7 @@ module.exports = {
     filename: '[name].[contenthash].js',
   },
   
-  devtool: 'source-map', // Gera source maps
+  devtool: 'source-map', // Generate source maps
   
   plugins: [
     new FrentrySourceMapPlugin({
@@ -27,7 +27,7 @@ module.exports = {
       version: process.env.FRENTRY_VERSION || 'dev',
       apiUrl: process.env.FRENTRY_API_URL || 'http://localhost:3000',
       enabled: process.env.NODE_ENV === 'production',
-      deleteAfterUpload: true, // Remove .map files do output
+      deleteAfterUpload: true, // Remove .map files from output
     })
   ],
   
@@ -82,8 +82,8 @@ NODE_ENV=production
 
 **src/index.js**
 ```js
-// Inicializa error tracking
-const FRENTRY_DSN = 'https://xxx@seu-frentry.com/xxx';
+// Initialize error tracking
+const FRENTRY_DSN = 'https://xxx@your-frentry.com/xxx';
 const APP_VERSION = '1.0.0';
 
 function sendError(error) {
@@ -108,10 +108,10 @@ window.addEventListener('unhandledrejection', (event) => {
   sendError(new Error(event.reason));
 });
 
-// Seu código aqui
+// Your code here
 console.log('App initialized');
 
-// Exemplo: trigger error
+// Example: trigger error
 document.getElementById('error-btn')?.addEventListener('click', () => {
   throw new Error('Test error from Webpack app!');
 });
@@ -142,65 +142,65 @@ document.getElementById('error-btn')?.addEventListener('click', () => {
 #!/bin/bash
 set -e
 
-# Carrega variáveis de ambiente
+# Load environment variables
 export $(cat .env | xargs)
 
-# Build com upload automático via plugin
+# Build with automatic upload via plugin
 npm run build:prod
 
 echo "✅ Build complete and source maps uploaded!"
 ```
 
-## Como Funciona
+## How it Works
 
-1. **Build inicia**: `npm run build:prod`
-2. **Webpack compila** código e gera source maps
-3. **Plugin detecta** `.js.map` files no output
-4. **Upload automático** via API do Frentry
-5. **Cleanup** (opcional): remove `.map` do dist/
+1. **Build starts**: `npm run build:prod`
+2. **Webpack compiles** code and generates source maps
+3. **Plugin detects** `.js.map` files in output
+4. **Automatic upload** via Frentry API
+5. **Cleanup** (optional): removes `.map` from dist/
 
-## Vantagens do Plugin
+## Plugin Advantages
 
-- ✅ Upload automático a cada build
-- ✅ Não precisa de script separado
-- ✅ Pode remover source maps do output público
-- ✅ Integrado no pipeline do Webpack
+- ✅ Automatic upload on every build
+- ✅ No separate script needed
+- ✅ Can remove source maps from public output
+- ✅ Integrated in Webpack pipeline
 
-## Opções do Plugin
+## Plugin Options
 
 ```js
 new FrentrySourceMapPlugin({
-  projectId: 'xxx',           // Obrigatório
-  version: '1.0.0',           // Obrigatório
-  apiUrl: 'http://...',       // Opcional
-  authToken: 'token',         // Opcional
-  enabled: true,              // Opcional (default: true)
-  deleteAfterUpload: false,   // Opcional (default: false)
+  projectId: 'xxx',           // Required
+  version: '1.0.0',           // Required
+  apiUrl: 'http://...',       // Optional
+  authToken: 'token',         // Optional
+  enabled: true,              // Optional (default: true)
+  deleteAfterUpload: false,   // Optional (default: false)
 })
 ```
 
-## Fluxo de Produção
+## Production Flow
 
 ```bash
-# 1. Configurar variáveis
+# 1. Configure variables
 export FRENTRY_PROJECT_ID=xxx
 export FRENTRY_VERSION=$(git rev-parse --short HEAD)
 export NODE_ENV=production
 
-# 2. Build (plugin faz upload automaticamente)
+# 2. Build (plugin uploads automatically)
 npm run build:prod
 
 # 3. Deploy
 # rsync, scp, aws s3 sync, etc.
 ```
 
-## Teste Local
+## Local Testing
 
 ```bash
-# Build de desenvolvimento (não faz upload)
+# Development build (no upload)
 npm run build
 
-# Build de produção (com upload)
+# Production build (with upload)
 NODE_ENV=production \
 FRENTRY_PROJECT_ID=xxx \
 FRENTRY_VERSION=test \
@@ -209,7 +209,7 @@ npm run build:prod
 
 ## Debugging
 
-Para ver logs do plugin:
+To see plugin logs:
 
 ```js
 // webpack.config.js
@@ -224,9 +224,9 @@ new FrentrySourceMapPlugin({
 })
 ```
 
-## Alternativa: Hook Manual
+## Alternative: Manual Hook
 
-Se não quiser usar o plugin:
+If you don't want to use the plugin:
 
 ```js
 // webpack.config.js
